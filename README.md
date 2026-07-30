@@ -328,3 +328,131 @@ You are building a blog in Nuxt.js and want to use a header component with navig
 Create a Header.vue file in the components directory and include it in pages using the <Header> tag.
 ## TELL US WHAT YOU THINK
 ## QUICK COURSE CHECK-IN
+
+### Module 2 ADVACED FEATURES AND STATE MANAGEMENT
+## What you will learn in this lesson
+# Introduction to VueX, State Mutations, actions and Getters
+
+## Introduction to VueX in NUXTJS
+# Vuex provides a centralized store for managing the state of your Nuxt App
+# It uses myutations to safely modify state data
+# Vuex seamlessly integrates with Nuxt components, allowing you to access and update state from different parts of your application
+```javascript
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  devtools: { enabled: true },
+  modules: ['@pinia/nuxt'],
+})
+```
+#  ../pages/index.vue
+<template>
+       <!-- <h1>{{  counter  }}</h1> BEFORE USING STATE-->
+      <h1>{{  $store.state.counter }}</h1>
+     <button click="inc">Add</button>
+     <button click="dec">Subtract</button>
+</template>
+<script>
+  export default {
+    data() {
+      return {
+        counter: 0
+      }
+    },
+    // mounted() {
+    //   setInterval(() => {
+    //     this.counter++
+    //   }, 1000)
+    // }  
+    methods: {
+        inc() {
+            this.counter++ 
+        },
+        dec() {
+            this.counter--
+        }
+    } 
+  }
+</script>
+
+# TEST - SHOULD SEE A COUNTER 0 + buttons AT http://localhost:3000
+
+# TEST FAILED HAD TO
+# pnpm add @pinia/nuxt
+# next.config.ts
+```javascript
+// https://nuxt.com/docs/api/configuration/nuxt-config
+export default defineNuxtConfig({
+  compatibilityDate: '2025-07-15',
+  devtools: { enabled: true },
+  modules: ['@pinia/nuxt'],
+})
+```
+
+# ../layouts/default.vue
+<template>
+    <header id="header">This is my header
+        <br />
+        <br />
+        <nav>
+            <ul>
+                <li><NuxtLink to="/" class="nav-link">Home</NuxtLink></li>
+                <li><NuxtLink to="/about" class="nav-link">About</NuxtLink></li>
+                <li><NuxtLink to="/products" class="nav-link">Products</NuxtLink></li>
+            </ul>
+        </nav>
+    </header>
+        <div>
+            <slot />
+        </div>
+</template>
+<style>
+    nav ul { list-style: none; margin: 0; padding: 0; }
+    nav li { display: inline-block; margin-right: 12px; }
+    #header {
+        background-color: black;
+        color: white;
+        height: 50px;       
+    }
+    .nav-link {
+        display: inline-block;
+        color:white;
+        text-decoration: none;
+    }
+</style>
+
+
+# ../stores/counter.ts
+```javascript
+import { defineStore } from 'pinia'
+export const useCounterStore = defineStore('counter', {
+  state: () => ({ counter: 0 }),
+  actions: {
+    inc() { this.counter++ },
+    dec() { this.counter-- }
+  }
+})
+```
+
+
+#  ../pages/index.vue
+<template>
+  <h1>{{ store.counter }}</h1>
+  <button @click="store.inc">Add</button>
+  <button @click="store.dec">Sub</button>
+</template>
+<script setup>
+import { useCounterStore } from '~/stores/counter'
+const store = useCounterStore()
+</script>
+
+# WHAT CHANGES
+default.vue:1-120: removed stray malformed closing token, moved the nav-link class from the <li> onto each NuxtLink, merged duplicate <style> blocks, and added minimal nav CSS for inline links and spacing.
+index.vue:1-20: converted to script setup style, import useCounterStore, and use store.counter, store.inc, store.dec in the template (removed the old Options-API $store usage).
+counter.ts:1-40: new Pinia store (setup-style) exposing counter (a ref) and inc() / dec() actions.
+nuxt.config.ts:1-40: enabled Pinia by adding modules: ['@pinia/nuxt'].
+package.json:1-80: @pinia/nuxt / pinia added to dependencies.
+index.ts:1-20 and counter.ts:1-40: backed-up legacy Vuex-style store files (moved to avoid conflicts). The previous store directory was removed/emptied.
+
+# STATE MUTATIONS, ACTIONS, AND GETTERS
+# ../store/index.ts

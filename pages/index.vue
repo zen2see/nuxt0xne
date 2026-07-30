@@ -1,10 +1,10 @@
 <template>
-    <!-- <div>
-        <h1>Homepage</h1>
-        <p>This is the homepage of our Nuxt.js application.</p>
-    </div> -->
-    <Homepage />
-    <HomepageCard />
-    <HomepageCard />
+  <h1>{{ store.counter }}</h1>
+  <button @click="store.inc">Add</button>
+  <button @click="store.dec">Sub</button>
 </template>
 
+<script setup>
+import { useCounterStore } from '~/stores/counter'
+const store = useCounterStore()
+</script>
